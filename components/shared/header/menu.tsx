@@ -9,23 +9,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import UserButton from "@/components/shared/header/user-button";
 
 const Menu = () => {
   return (
     <div className="flex justify-end gap-3">
       <nav className="hidden md:flex w-full max-w-xs gap-1">
-        <div className="space-x-2">
+        <div className="space-x-2 flex items-center">
           <ThemeToggle />
           <Button asChild variant="ghost">
             <Link href="/cart">
               <ShoppingCart /> Cart
             </Link>
           </Button>
-          <Button asChild>
-            <Link href="/sign-in">
-              <UserIcon /> Sign In
-            </Link>
-          </Button>
+          <UserButton />
         </div>
       </nav>
       <nav className="md:hidden">
@@ -41,11 +38,7 @@ const Menu = () => {
                 <ShoppingCart />
               </Link>
             </Button>
-            <Button asChild>
-              <Link href="/sign-in">
-                <UserIcon /> Sign In
-              </Link>
-            </Button>
+            <UserButton />
           </SheetContent>
         </Sheet>
       </nav>

@@ -2,7 +2,6 @@
 
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { hashSync } from "bcrypt-ts-edge";
-import { ZodError } from "zod";
 
 import { signInFormSchema, signUpFormSchema } from "@/lib/validator";
 import { signIn, signOut } from "@/auth";

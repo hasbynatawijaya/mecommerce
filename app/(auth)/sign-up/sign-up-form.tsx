@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signUpUser } from "@/lib/actions/user.action";
+import { signUpUser } from "@/lib/actions/user.actions";
 import { cn } from "@/lib/utils";
 
 const SignUpForm = () => {

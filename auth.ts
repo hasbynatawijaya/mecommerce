@@ -1,8 +1,10 @@
 import NextAuth from "next-auth";
+import type { NextAuthConfig } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
-import type { NextAuthConfig } from "next-auth";
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 import { prisma } from "@/db/prisma";
 
@@ -72,8 +74,9 @@ export const config = {
 
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, session, trigger }) {
       if (user) {
+        token.id = user.id;
         token.role = (user as any).role;
 
         if (user.name === "NO_NAME") {
@@ -84,9 +87,71 @@ export const config = {
             data: { name: token.name },
           });
         }
+
+        if (trigger === "signIn" || trigger === "signUp") {
+          const cookiesObject = await cookies();
+          const sessionCartId = cookiesObject.get("sessionCartId")?.value;
+
+          if (sessionCartId) {
+            const sessionCart = await prisma.cart.findFirst({
+              where: { sessionCartId },
+            });
+
+            if (sessionCart) {
+              if (sessionCart.userId !== user.id) {
+                await prisma.cart.deleteMany({
+                  where: { userId: user.id },
+                });
+
+                await prisma.cart.update({
+                  where: { id: sessionCart.id },
+                  data: { userId: user.id },
+                });
+              }
+            }
+          }
+        }
+      }
+
+      // Handle session updates
+      if (session?.user.name && trigger === "update") {
+        token.name = session.user.name;
       }
 
       return token;
+    },
+    authorized({ request, auth }) {
+      const protectedPaths = [
+        /\/shipping-address/,
+        /\/payment-method/,
+        /\/place-order/,
+        /\/profile/,
+        /\/user\/(.*)/,
+        /\/order\/(.*)/,
+        /\/admin/,
+      ];
+
+      const { pathname } = request.nextUrl;
+
+      if (!auth && protectedPaths.some((path) => path.test(pathname)))
+        return false;
+      
+      if (!request.cookies.get("sessionCartId")) {
+        const sessionCartId = crypto.randomUUID();
+
+        const newRequestHeaders = new Headers(request.headers);
+
+        const response = NextResponse.next({
+          request: {
+            headers: newRequestHeaders,
+          },
+        });
+
+        response.cookies.set("sessionCartId", sessionCartId);
+        return response;
+      }
+
+      return true;
     },
   },
 } satisfies NextAuthConfig;

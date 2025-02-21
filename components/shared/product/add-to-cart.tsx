@@ -1,18 +1,15 @@
 "use client";
 
 import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, Minus, Loader } from "lucide-react";
 
 import { Cart, CartItem } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.actions";
-import { ToastAction } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 
 const AddToCart = ({ item, cart }: { item: CartItem; cart?: Cart }) => {
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
   const { toast } = useToast();
 
   const existItem = cart?.items.find(

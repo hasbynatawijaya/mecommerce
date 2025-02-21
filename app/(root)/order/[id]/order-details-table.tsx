@@ -24,7 +24,7 @@ import {
   approvePaypalOrder,
   createPaypalOrder,
 } from "@/lib/actions/order.actions";
-import { toast, useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const OrderDetailsTable = ({
   order,
@@ -33,6 +33,8 @@ const OrderDetailsTable = ({
   order: Order;
   paypalClientId: string;
 }) => {
+  const { toast } = useToast();
+
   const {
     id,
     shippingAddress,
@@ -49,7 +51,6 @@ const OrderDetailsTable = ({
   } = order;
 
   const PaypalLoadingState = () => {
-    const { toast } = useToast();
     const [{ isPending, isRejected }] = usePayPalScriptReducer();
 
     let textContent = "";
@@ -64,7 +65,6 @@ const OrderDetailsTable = ({
   };
 
   const onCreatePaypalOrder = async () => {
-    console.log(order.id)
     const res = await createPaypalOrder(order.id);
 
     if (!res.success) {

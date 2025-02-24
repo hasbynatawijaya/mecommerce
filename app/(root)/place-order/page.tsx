@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import { ShippingAddress } from "@/types";
 import { getMyCart } from "@/lib/actions/cart.actions";
 import { getUserById } from "@/lib/actions/user.actions";
-import CheckoutSteps from "@/components/shared/checkout-steps.tsx";
+import CheckoutSteps from "@/components/shared/checkout-steps";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {

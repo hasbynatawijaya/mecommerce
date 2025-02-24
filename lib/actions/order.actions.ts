@@ -11,6 +11,7 @@ import { getUserById } from "@/lib/actions/user.actions";
 import { orderSchema } from "@/lib/validator";
 import { paypal } from "@/lib/paypal";
 import { PaymentResult } from "@/types";
+import { PAGE_SIZE } from "@/lib/constants";
 
 export async function createOrder() {
   try {
@@ -273,4 +274,38 @@ export async function updateOrderTopaid({
       message: formatError(error),
     };
   }
+}
+
+export async function getMyOrders({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  page: number;
+  limit?: number;
+}) {
+  const session = await auth();
+
+  if (!session) throw new Error("User not authorized");
+
+  const data = await prisma.order.findMany({
+    where: {
+      userId: session.user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const dataCount = await prisma.order.count({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  };
 }

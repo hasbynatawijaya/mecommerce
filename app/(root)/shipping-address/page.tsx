@@ -6,7 +6,7 @@ import { ShippingAddress } from "@/types";
 import { getMyCart } from "@/lib/actions/cart.actions";
 import { getUserById } from "@/lib/actions/user.actions";
 import ShippingAddressForm from "@/app/(root)/shipping-address/shipping-address-form";
-import CheckoutSteps from "@/components/shared/checkout-steps.tsx";
+import CheckoutSteps from "@/components/shared/checkout-steps";
 
 export const metadata: Metadata = {
   title: "Shipping Address",

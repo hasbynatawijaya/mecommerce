@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { APP_NAME } from "@/lib/constants";
 import Menu from "@/components/shared/header/menu";
+import MainNav from "@/app/user/main-nav";
 
 export default function UserLayout({
   children,
@@ -21,6 +22,7 @@ export default function UserLayout({
               width={48}
             />
           </Link>
+          <MainNav className="mx-6" />
           <div className="ml-auto items-center flex space-x-4">
             <Menu />
           </div>

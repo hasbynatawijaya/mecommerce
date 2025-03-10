@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -9,7 +10,14 @@ import {
 } from "@paypal/react-paypal-js";
 
 import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 import { Order } from "@/types";
+import {
+  approvePaypalOrder,
+  createPaypalOrder,
+  deliverOrder,
+  updateOrderToPaidCOD,
+} from "@/lib/actions/order.actions";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -20,18 +28,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  approvePaypalOrder,
-  createPaypalOrder,
-} from "@/lib/actions/order.actions";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 const OrderDetailsTable = ({
   order,
   paypalClientId,
+  isAdmin,
 }: {
   order: Order;
   paypalClientId: string;
+  isAdmin: boolean;
 }) => {
   const { toast } = useToast();
 
@@ -86,6 +92,48 @@ const OrderDetailsTable = ({
       variant: res.success ? "default" : "destructive",
       description: res.message,
     });
+  };
+
+  const MarkAsPaidButton = () => {
+    const [isPending, startTransition] = useTransition();
+    const { toast } = useToast();
+
+    const onSubmit = () => {
+      startTransition(async () => {
+        const res = await updateOrderToPaidCOD(order.id);
+        toast({
+          variant: res.success ? "default" : "destructive",
+          description: res.message,
+        });
+      });
+    };
+
+    return (
+      <Button type="button" disabled={isPending} onClick={onSubmit}>
+        {isPending ? "Processing...." : "Mark as paid"}
+      </Button>
+    );
+  };
+
+  const MarkAsDeliveredButton = () => {
+    const [isPending, startTransition] = useTransition();
+    const { toast } = useToast();
+
+    const onSubmit = () => {
+      startTransition(async () => {
+        const res = await deliverOrder(order.id);
+        toast({
+          variant: res.success ? "default" : "destructive",
+          description: res.message,
+        });
+      });
+    };
+
+    return (
+      <Button type="button" disabled={isPending} onClick={onSubmit}>
+        {isPending ? "Processing...." : "Mark as deliverd"}
+      </Button>
+    );
   };
 
   return (
@@ -196,6 +244,18 @@ const OrderDetailsTable = ({
                     />
                   </PayPalScriptProvider>
                 </div>
+              ) : (
+                <></>
+              )}
+
+              {/* Cash on delivery */}
+              {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" ? (
+                <MarkAsPaidButton />
+              ) : (
+                <></>
+              )}
+              {isAdmin && isPaid && !isDelivered ? (
+                <MarkAsDeliveredButton />
               ) : (
                 <></>
               )}

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { auth } from "@/auth";
 import { getOrderById } from "@/lib/actions/order.actions";
 import OrderDetailsTable from "@/app/(root)/order/[id]/order-details-table";
 import { ShippingAddress } from "@/types";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 const OrderDetailsPage = async (props: { params: Promise<{ id: string }> }) => {
   const { id } = await props.params;
+  const session = await auth();
 
   const order = await getOrderById(id);
 
@@ -23,6 +25,7 @@ const OrderDetailsPage = async (props: { params: Promise<{ id: string }> }) => {
         ...order,
         shippingAddress: order.shippingAddress as ShippingAddress,
       }}
+      isAdmin={session?.user?.role === "admin" || false}
     />
   );
 };

@@ -8,6 +8,8 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
 });
 
+const NUMBER_FORMATTER = new Intl.NumberFormat("en-US");
+
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
@@ -60,6 +62,10 @@ export function formatCurrency(amount: number | string | null) {
   } else if (typeof amount === "string") {
     return CURRENCY_FORMATTER.format(Number(amount));
   } else return "NaN";
+}
+
+export function formatNumber(number: number) {
+  return NUMBER_FORMATTER.format(number);
 }
 
 export function formatId(id: string) {
@@ -116,9 +122,9 @@ export function formUrlQuery({
   value: string | null;
 }) {
   const query = qs.parse(params);
-  
+
   query[key] = value;
-  
+
   return qs.stringifyUrl(
     {
       url: window.location.pathname,

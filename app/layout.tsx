@@ -4,7 +4,10 @@ import { ThemeProvider } from "next-themes";
 
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from "@/lib/constants";
 import { Toaster } from "@/components/ui/toaster";
+
+import "@uploadthing/react/styles.css";
 import "@/assets/styles/globals.css";
+
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -9,7 +9,7 @@ const ProductCard = ({ product }: { product: Product }) => {
   const productDetailURL = `/product/${product.slug}`;
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm flex flex-col justify-between">
       <CardHeader className="p-0 items-center">
         <Link href={productDetailURL}>
           <Image

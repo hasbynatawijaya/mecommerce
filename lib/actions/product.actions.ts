@@ -3,7 +3,7 @@
 import { z } from "zod";
 
 import { prisma } from "@/db/prisma";
-import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from "@/lib/constants";
+import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
 import { convertPrismaToPlainObject, formatError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { productSchema, updateProductSchema } from "@/lib/validator";
@@ -28,10 +28,8 @@ export async function getProductById(id: string) {
 }
 
 export async function getAllProducts({
-  query,
   limit,
   page,
-  category,
 }: {
   query: string;
   limit: number;

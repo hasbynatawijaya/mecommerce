@@ -30,6 +30,7 @@ export async function getProductById(id: string) {
 export async function getAllProducts({
   limit,
   page,
+  query,
 }: {
   query: string;
   limit: number;
@@ -40,6 +41,12 @@ export async function getAllProducts({
     orderBy: { createdAt: "desc" },
     skip: (page - 1) * limit,
     take: limit,
+    where: {
+      name: {
+        contains: query,
+        mode: "insensitive",
+      },
+    },
   });
 
   const dataCount = await prisma.product.count();

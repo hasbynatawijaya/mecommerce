@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { Fragment, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -29,15 +29,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import ReviewForm from "@/components/shared/review-form/review-form";
 
 const OrderDetailsTable = ({
   order,
   paypalClientId,
   isAdmin,
+  userId,
 }: {
   order: Order;
   paypalClientId: string;
   isAdmin: boolean;
+  userId: string;
 }) => {
   const { toast } = useToast();
 
@@ -184,30 +187,42 @@ const OrderDetailsTable = ({
                 </TableHeader>
                 <TableBody>
                   {orderItems.map((item) => (
-                    <TableRow key={item.slug}>
-                      <TableCell>
-                        <Link
-                          href={`/product/${item.slug}`}
-                          className="flex items-center"
-                        >
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                          />
-                          <span className="px-2">{item.name}</span>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <span className="px-2">{item.qty}</span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="px-2">
-                          {formatCurrency(item.price)}
-                        </span>
-                      </TableCell>
-                    </TableRow>
+                    <Fragment key={item.slug}>
+                      <TableRow>
+                        <TableCell>
+                          <Link
+                            href={`/product/${item.slug}`}
+                            className="flex items-center"
+                          >
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              width={50}
+                              height={50}
+                            />
+                            <span className="px-2">{item.name}</span>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <span className="px-2">{item.qty}</span>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <span className="px-2">
+                            {formatCurrency(item.price)}
+                          </span>
+                        </TableCell>
+                        {order.isDelivered ? (
+                          <TableCell>
+                            <ReviewForm
+                              userId={userId}
+                              productId={item.productId}
+                            />
+                          </TableCell>
+                        ) : (
+                          <></>
+                        )}
+                      </TableRow>
+                    </Fragment>
                   ))}
                 </TableBody>
               </Table>

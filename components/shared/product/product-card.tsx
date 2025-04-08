@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ProductPrice from "@/components/shared/product/product-price";
 import { Product } from "@/types";
+import Rating from "@/components/shared/product/rating";
 
 const ProductCard = ({ product }: { product: Product }) => {
   const productDetailURL = `/product/${product.slug}`;
@@ -27,7 +28,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           <h2 className="text-sm font-medium line-clamp-1">{product.name}</h2>
         </Link>
         <div className="flex-between gap-4">
-          <p>{product.rating} stars</p>
+          <Rating value={Number(product.rating)} />
           {product.stock > 0 ? (
             <ProductPrice value={Number(product.price)} />
           ) : (

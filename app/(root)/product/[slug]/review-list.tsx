@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Calendar, User } from "lucide-react";
-import Link from "next/link";
 
 import { Review } from "@/types";
-import ReviewForm from "@/components/shared/review-form/review-form";
+
 import { getReviews } from "@/lib/actions/review.action";
 import {
   Card,
@@ -18,9 +17,7 @@ import { formatDateTime } from "@/lib/utils";
 import Rating from "@/components/shared/product/rating";
 
 const ReviewList = ({
-  userId,
   productId,
-  productSlug,
 }: {
   userId?: string;
   productId: string;

@@ -5,7 +5,6 @@ import { auth } from "@/auth";
 import { getOrderById } from "@/lib/actions/order.actions";
 import OrderDetailsTable from "@/app/(root)/order/[id]/order-details-table";
 import { ShippingAddress } from "@/types";
-import ReviewForm from "@/components/shared/review-form/review-form";
 
 export const metadata: Metadata = {
   title: "Order Details",

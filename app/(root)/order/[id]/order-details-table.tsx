@@ -30,17 +30,20 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import ReviewForm from "@/components/shared/review-form/review-form";
+import StripePayment from "@/app/(root)/order/[id]/stripe-payment";
 
 const OrderDetailsTable = ({
   order,
   paypalClientId,
   isAdmin,
   userId,
+  stripeClientSecret,
 }: {
   order: Order;
   paypalClientId: string;
   isAdmin: boolean;
   userId: string;
+  stripeClientSecret: string | null;
 }) => {
   const { toast } = useToast();
 
@@ -259,6 +262,17 @@ const OrderDetailsTable = ({
                     />
                   </PayPalScriptProvider>
                 </div>
+              ) : (
+                <></>
+              )}
+
+              {/* Cash on delivery */}
+              {!isPaid && paymentMethod === "Stripe" && stripeClientSecret ? (
+                <StripePayment
+                  priceInCents={Number(order.totalPrice) * 100}
+                  orderId={order.id}
+                  clientSecret={stripeClientSecret}
+                />
               ) : (
                 <></>
               )}

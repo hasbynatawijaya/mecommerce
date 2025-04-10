@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Stripe from "stripe";
 
 import { auth } from "@/auth";
 import { getOrderById } from "@/lib/actions/order.actions";
@@ -17,6 +18,20 @@ const OrderDetailsPage = async (props: { params: Promise<{ id: string }> }) => {
   const order = await getOrderById(id);
 
   if (!order) notFound();
+
+  let stripeClientSecret = null;
+
+  if (order.paymentMethod === "Stripe" && !order?.isPaid) {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(Number(order.totalPrice) * 100),
+      currency: "USD",
+      metadata: {
+        orderId: order.id,
+      },
+    });
+    stripeClientSecret = paymentIntent.client_secret;
+  }
 
   const transformedOrder = {
     ...order,
@@ -38,6 +53,7 @@ const OrderDetailsPage = async (props: { params: Promise<{ id: string }> }) => {
       order={transformedOrder}
       isAdmin={session?.user?.role === "admin" || false}
       userId={session?.user?.id as string}
+      stripeClientSecret={stripeClientSecret}
     />
   );
 };
